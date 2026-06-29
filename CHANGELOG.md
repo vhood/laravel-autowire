@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org).
 
+## [1.0.4](https://github.com/vhood/laravel-autowire/releases/tag/v1.0.4) - 2026-06-29
+
+### Fixed
+
+- Resolved bootstrapping container crash (`Target class [env] does not exist`) in Laravel 13 by removing `app()->isProduction()` from the configuration file.
+
+### Changed
+
+- Refactored `BinderService` to dynamically evaluate the production environment, allowing explicit cache overriding via the `AUTOWIRE_CACHE` environment variable.
+
 ## [1.0.3](https://github.com/vhood/laravel-autowire/releases/tag/v1.0.3) - 2026-06-29
 
 ### Fixed

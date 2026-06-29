@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Vhood\Laravel\Autowire\Services;
 
 use Composer\ClassMapGenerator\ClassMapGenerator;
-use Illuminate\Contracts\Container\Container;
+use Illuminate\Contracts\Foundation\Application;
 use ReflectionClass;
 use Vhood\Laravel\Autowire\Attributes\Autowire;
 
 class BinderService
 {
     public function __construct(
-        private Container $app,
+        private Application $app,
         private array $config
     ) {}
 
@@ -21,7 +21,9 @@ class BinderService
      */
     public function bind(): void
     {
-        if ($this->config['use_cache'] && file_exists($this->config['cache_path'])) {
+        $shouldUseCache = $this->config['use_cache'] ?? $this->app->environment('production');
+
+        if ($shouldUseCache && file_exists($this->config['cache_path'])) {
             $bindings = require $this->config['cache_path'];
             $this->registerFromMap($bindings);
 
