@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org).
 
+## [1.0.3](https://github.com/vhood/laravel-autowire/releases/tag/v1.0.3) - 2026-06-29
+
+### Fixed
+
+- Removed the global `env()` helper from the default configuration file to prevent container resolution conflicts (`Class "env" does not exist`) in Laravel 13.
+
 ## [1.0.2](https://github.com/vhood/laravel-autowire/releases/tag/v1.0.2) - 2026-06-29
 
 ### Added

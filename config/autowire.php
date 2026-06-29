@@ -16,5 +16,5 @@ return [
     /**
      * Determine if the binder should rely on the cached map file.
      */
-    'use_cache' => env('AUTOWIRE_CACHE', app()->isProduction()),
+    'use_cache' => app()->isProduction(),
 ];
