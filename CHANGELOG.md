@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org).
 
+## [1.0.2](https://github.com/vhood/laravel-autowire/releases/tag/v1.0.2) - 2026-06-29
+
+### Added
+
+- Official support for `symfony/finder:^8.0` to ensure compatibility with Laravel 13.
+
 ## [1.0.1](https://github.com/vhood/laravel-autowire/releases/tag/v1.0.1) - 2026-06-29
 
 ### Added
