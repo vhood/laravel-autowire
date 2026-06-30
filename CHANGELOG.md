@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org).
 
+## [1.0.5](https://github.com/vhood/laravel-autowire/releases/tag/v1.0.5) - 2026-06-30
+
+### Added
+
+- Log warning (`Log::warning`) when production caching is enabled but the cache file does not exist, improving visibility for incorrect deployment setups.
+
+### Changed
+
+- Overhauled `README.md` to document the fallback caching behavior and modern service provider registration methods for Laravel 10 through 13.
+
 ## [1.0.4](https://github.com/vhood/laravel-autowire/releases/tag/v1.0.4) - 2026-06-29
 
 ### Fixed

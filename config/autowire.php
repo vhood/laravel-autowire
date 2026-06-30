@@ -16,8 +16,8 @@ return [
     /**
      * Determine if the binder should rely on the cached map file.
      *
-     * Leave null (default) to automatically enable caching in production environments.
-     * To override this behavior, set the AUTOWIRE_CACHE variable in your .env file (true/false).
+     * - Leave null (default) to automatically enable caching ONLY in production environments.
+     * - Set to true/false (manually or via env) to override and force/disable caching.
      */
     'use_cache' => env('AUTOWIRE_CACHE', null),
 ];

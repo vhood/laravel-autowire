@@ -16,6 +16,11 @@ Unlike other packages, this tool scans **only your infrastructure implementation
 - **High Performance:** Powered by Composer's native `ClassMapGenerator` (no slow regex file parsing) and includes full production caching.
 - **Zero Configuration:** Works out of the box with Laravel's package auto-discovery.
 
+## Requirements
+
+- **PHP:** `^8.1`
+- **Laravel (Framework/Support):** `^10.0 | ^11.0 | ^12.0 | ^13.0`
+
 ## Installation
 
 You can install the package via composer:
@@ -64,7 +69,31 @@ class EloquentMemberRepository implements MemberRepository
 
 ### 3. Service Provider Registration
 
-Call the binder service once inside your application infrastructure service provider (e.g., `ApplicationServiceProvider`):
+The package utilizes Laravel's package auto-discovery. However, if you have disabled auto-discovery or need explicit manual registration, choose one of the following methods:
+
+#### Option A: Manual Registration via Config
+
+- **For Laravel 11, 12, and 13:** Add the service provider to your `bootstrap/providers.php` file:
+
+  ```php
+  return [
+      // ... other providers
+      Vhood\Laravel\Autowire\AutowireServiceProvider::class,
+  ];
+  ```
+
+- **For Laravel 10:** Add the service provider to the `providers` array in your `config/app.php` file:
+
+  ```php
+  'providers' => [
+      // ... other providers
+      Vhood\Laravel\Autowire\AutowireServiceProvider::class,
+  ],
+  ```
+
+#### Option B: Fine-Grained Registration (For Custom Architectures)
+
+If you prefer to boot up the bindings manually inside your own application infrastructure provider (e.g., `ApplicationServiceProvider`), you can call the binder service directly:
 
 ```php
 namespace Vhood\Infrastructure\Laravel\Providers;
@@ -77,7 +106,7 @@ class ApplicationServiceProvider extends ServiceProvider
     public function register(): void
     {
         // Automatically boots up and binds all annotated classes
-        \$this->app->make(BinderService::class)->bind();
+        $this->app->make(BinderService::class)->bind();
     }
 }
 ```
@@ -94,15 +123,21 @@ By default, the package registers bindings using `$app->bind()`. If you need a s
 
 ### Production Caching
 
-Scanning directories on every HTTP request can impact performance in production. To pre-compile all attribute mappings into a fast static PHP array, use the following Artisan commands in your deploy script:
+Scanning directories on every HTTP request can impact performance. To eliminate this overhead, you can compile all attribute mappings into a fast, static PHP array.
+
+> ⚠️ **Important:** The cache file is **never generated automatically** to prevent race conditions and slow downs during local development. If caching is enabled (either automatically in `production` environments or manually via config/env), you **must** generate the cache file using the Artisan command.
+
+To manage the cache in your deployment scripts or local environment, use the following commands:
 
 ```bash
-# Pre-compile mappings to bootstrap/cache/
+# Pre-compile mappings to bootstrap/cache/ (Required when cache is enabled)
 php artisan autowire:cache
 
-# Clear compiled cache
+# Clear compiled cache and return to dynamic scanning
 php artisan autowire:clear
 ```
+
+> 💡 **Behavior Note:** If caching is enabled but the cache file does not exist yet, the package will silently fall back to dynamic runtime scanning and log a warning. No critical exceptions will be thrown, ensuring your application remains up, but you won't get the production performance benefits until you generate the cache file.
 
 ## Configuration (`config/autowire.php`)
 
@@ -123,8 +158,8 @@ return [
     /**
      * Determine if the binder should rely on the cached map file.
      *
-     * Leave null (default) to automatically enable caching in production environments.
-     * To override this behavior, set the AUTOWIRE_CACHE variable in your .env file (true/false).
+     * - Leave null (default) to automatically enable caching ONLY in production environments.
+     * - Set to true/false (manually or via env) to override and force/disable caching.
      */
     'use_cache' => env('AUTOWIRE_CACHE', null),
 ];

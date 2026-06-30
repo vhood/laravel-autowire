@@ -6,6 +6,7 @@ namespace Vhood\Laravel\Autowire\Services;
 
 use Composer\ClassMapGenerator\ClassMapGenerator;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Support\Facades\Log;
 use ReflectionClass;
 use Vhood\Laravel\Autowire\Attributes\Autowire;
 
@@ -23,11 +24,18 @@ class BinderService
     {
         $shouldUseCache = $this->config['use_cache'] ?? $this->app->environment('production');
 
-        if ($shouldUseCache && file_exists($this->config['cache_path'])) {
-            $bindings = require $this->config['cache_path'];
-            $this->registerFromMap($bindings);
+        if ($shouldUseCache) {
+            if (file_exists($this->config['cache_path'])) {
+                $bindings = require $this->config['cache_path'];
+                $this->registerFromMap($bindings);
 
-            return;
+                return;
+            }
+
+            Log::warning(
+                'Laravel Autowire: Caching is enabled but the cache file was not found. ' .
+                    'Falling back to dynamic runtime scanning. Please run "php artisan autowire:cache".'
+            );
         }
 
         $bindings = $this->scanDirectories();
